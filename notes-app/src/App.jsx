@@ -1,21 +1,31 @@
 import React, { useState } from "react";
-
+import { X } from "lucide-react";
 const App = () => {
   //use state variables
   const [title, setTitle] = useState("");
   const [details, setDetails] = useState("");
   //create a array to store the answer
   const [task, setTask] = useState([]);
+
   const submitHandler = (e) => {
     e.preventDefault();
-    const copyTask = [];
+    //creates a new array
+    const copyTask = [...task];
+    copyTask.push({ title, details });
+    setTask(copyTask);
 
     setTitle("");
     setDetails("");
   };
 
+  const deleteNote = (idx) => {
+    const copyTask = [...task];
+    //spice method
+    copyTask.splice(idx, 1);
+    setTask(copyTask);
+  };
   return (
-    <div className="h-screen lg:flex bg-gray-800 text-white">
+    <div className="h-screen lg:flex bg-black text-white">
       <form
         onSubmit={(e) => {
           submitHandler(e);
@@ -42,7 +52,7 @@ const App = () => {
           }}
         />
         <button
-          className="bg-white text-black px-5 py-2 w-full font-medium outline-none
+          className="bg-white active:scale-95 rounded-2xl text-black px-5 py-2 w-full font-medium outline-none
         active:bg-gray-300"
         >
           Add notes
@@ -50,11 +60,35 @@ const App = () => {
       </form>
       <div className=" lg:w-1/2 lg:border-l-2 bg-gray-900  p-10">
         <h1 className="text-3xl font-bold">Recent Notes</h1>
-        <div className="flex flex-wrap gap-5 mt-5 overflow-auto h-full">
-          <div className="h-53 w-40 rounded-2xl bg-white"></div>
-          <div className="h-53 w-40 rounded-2xl bg-white"></div>
-          <div className="h-53 w-40 rounded-2xl bg-white"></div>
-          <div className="h-53 w-40 rounded-2xl bg-white"></div>
+        <div className="flex flex-wrap items-start justify-start gap-5 mt-5 overflow-auto h-[90%]">
+          {task.map(function (elem, idx) {
+            return (
+              <div
+                key={idx}
+                className="relative h-52 w-40 flex flex-col justify-between items-start rounded-xl bg-cover text-black pt-9 pb-4 px-4 bg-[url('https://static.vecteezy.com/system/resources/previews/037/152/677/non_2x/sticky-note-paper-background-free-png.png')]"
+              >
+                <div>
+                  <h3 className="leading-tight text-xl font-bold">
+                    {elem.title}
+                  </h3>
+                  <p className="mt-4 leading-tight font-medium text-gray-600 text-xs">
+                    {elem.details}
+                  </p>
+                </div>
+                <button
+                  onClick={() => {
+                    deleteNote(idx);
+                  }}
+                  className="w-full cursor-pointer active:scale-95 bg-red-600 text-white py-1 rounded font-bold"
+                >
+                  Delete
+                </button>
+                {/* <h2 className="absolute top-5 right-5 bg-red-500 rounded-full p-1 text-xs">
+                  <X size={16} strokeWidth={2.75} />
+                </h2> */}
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
